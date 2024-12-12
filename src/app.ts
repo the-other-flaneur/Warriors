@@ -1,5 +1,11 @@
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+const boundingBox = canvas.getBoundingClientRect();
+canvas.width = boundingBox.width;
+canvas.height = boundingBox.height;
+
+console.log(boundingBox);
+
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 class game {
