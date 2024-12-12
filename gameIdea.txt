@@ -1,4 +1,8 @@
-que puedo hacer ahora rapidin?
+
+
+Hacer algo parecido al juego de tanques en el tema de las tecnologias para agregar al portfolio y aprender
+
+Multiplayer? si, como? el man usa go para el backend supuestamente y una libreria llamada gorilla
 
 tecnologia:
 browser game
@@ -6,6 +10,14 @@ typescript
 html5 canvas
 sprites 
 
+
+
+
+
+
+===========================
+
+a dificult game of climbing 
 
 
 
