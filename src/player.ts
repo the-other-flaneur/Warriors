@@ -38,8 +38,8 @@ export class Player {
 
         // Speed and physics parameters
         this.speed = canvasWidth * 0.01;
-        this.gravityStrength = canvasHeight * 0.0002;  // Gravity relative to canvas height
-        this.jumpStrength = canvasHeight * 0.03;      // Jump strength relative to canvas height
+        this.gravityStrength = canvasHeight * 0.004;  // Gravity relative to canvas height
+        this.jumpStrength = canvasHeight * 0.07;      // Jump strength relative to canvas height
 
         // Grounded state
         this.isGrounded = false;
@@ -59,7 +59,7 @@ export class Player {
             this.keys.add(e.code);
             
             // Jump when arrowup is pressed and player is grounded
-            if (e.code === 'ArrowUp' && this.isGrounded) {
+            if (e.code === 'ArrowUp') {
                 this.jump();
             }
 
@@ -80,11 +80,9 @@ export class Player {
     }
 
     jump() {
-        if (this.isGrounded) {
             // Apply upward velocity
             this.velocity.y = -this.jumpStrength;
             this.isGrounded = false;
-        }
     }
 
     update(ctx: CanvasRenderingContext2D) {

@@ -1,5 +1,6 @@
 import { Player } from './player.js';
 import { Proyectile } from './proyectile.js';
+import { Background } from './background.js';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -11,7 +12,7 @@ class game {
 
     constructor(ctx: CanvasRenderingContext2D, player: Player) {
         this.ctx = ctx;
-        this.player = player;   
+        this.player = player; 
         window.addEventListener('resize', () => this.resize());
         requestAnimationFrame(() => this.draw());
         this.resize();
@@ -46,6 +47,11 @@ class game {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.fillStyle = 'white';
         this.ctx.fillRect(10, 10, this.ctx.canvas.width - 20, this.ctx.canvas.height - 20);
+
+        const background = new Background(this.ctx.canvas.width, this.ctx.canvas.height);
+
+        // background
+        background.draw(this.ctx);
 
         this.player.draw(this.ctx);
 
