@@ -1,4 +1,5 @@
 import { Player } from './player.js';
+import { Proyectile } from './proyectile.js';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -22,10 +23,18 @@ class game {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         // update player
-        this.player.update(this.ctx);
+        this.player.update(ctx);
 
-        // draw player
-        this.player.draw(this.ctx);
+        // proyectiles
+        this.player.clientProyectiles.forEach((proyectile: Proyectile) => {
+            proyectile.update();
+
+            if (proyectile.isHit) {
+                const index = this.player.clientProyectiles.indexOf(proyectile);
+                this.player.clientProyectiles.splice(index, 1);
+            }
+        });
+
 
         // call gameLoop again
         requestAnimationFrame(() => this.gameLoop());
@@ -39,6 +48,11 @@ class game {
         this.ctx.fillRect(10, 10, this.ctx.canvas.width - 20, this.ctx.canvas.height - 20);
 
         this.player.draw(this.ctx);
+
+        // proyectiles
+        this.player.clientProyectiles.forEach((proyectile: Proyectile) => {
+            proyectile.draw(this.ctx);
+        });
 
         requestAnimationFrame(() => this.draw());
     }
