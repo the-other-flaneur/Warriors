@@ -1,7 +1,12 @@
 import { Player } from './player.js';
 import { Proyectile } from './proyectile.js';
-import { CollisionDetector } from './collisionDetection.js';
 import { Midwall } from './midwall.js';
+
+const socket = (window as any).io();
+
+if (socket) {
+    console.log('Connected to server');
+}
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -23,7 +28,6 @@ class game {
     }
 
     update() {
-        console.log('updating game');
         // clear canvas
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
@@ -49,7 +53,6 @@ class game {
     }
 
     draw() {
-        console.log('drawing game');
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.fillStyle = 'white';

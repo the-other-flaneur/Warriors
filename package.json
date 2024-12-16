@@ -1,26 +1,30 @@
 {
   "name": "gamedev",
   "version": "1.0.0",
-  "main": "index.js",
-  "type": "module",
+  "main": "app/dist/app.js",
+  "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "dev": "tsc -w && node ./app.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/node": "^22.10.2",
-    "nodemon": "^3.1.9",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "start": "node app/dist/app.js",
+    "build:frontend": "tsc -p src/tsconfig.json",
+    "build:backend": "tsc -p app/tsconfig.json",
+    "build": "npm run build:frontend && npm run build:backend",
+    "dev:frontend": "tsc -p src/tsconfig.json -w",
+    "dev:backend": "nodemon --watch 'app/**/*.ts' --exec 'ts-node' app/app.ts",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "watch": "concurrently \"tsc -p src/tsconfig.json -w\" \"tsc -p app/tsconfig.json -w\""
   },
   "dependencies": {
     "express": "^4.21.2",
-    "node": "^23.4.0"
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.2",
+    "@types/socket.io": "^3.0.1",
+    "concurrently": "^9.1.0",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }
