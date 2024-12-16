@@ -1,5 +1,7 @@
 import { Vector2 } from './vector2.js';
 import { Proyectile } from './proyectile.js';
+import { Midwall } from './midwall.js';
+import { CollisionDetector } from './collisionDetection.js';
 
 export class Player {
     position: Vector2;
@@ -37,7 +39,7 @@ export class Player {
         this.acceleration = new Vector2();
 
         // Speed and physics parameters
-        this.speed = canvasWidth * 0.01;
+        this.speed = canvasWidth * 0.03;
         this.gravityStrength = canvasHeight * 0.004;  // Gravity relative to canvas height
         this.jumpStrength = canvasHeight * 0.07;      // Jump strength relative to canvas height
 
@@ -85,7 +87,7 @@ export class Player {
             this.isGrounded = false;
     }
 
-    update(ctx: CanvasRenderingContext2D) {
+    update(ctx: CanvasRenderingContext2D, midwall: Midwall) {
         // Horizontal movement
         const movement = new Vector2();
         if(this.keys.has('ArrowLeft')) movement.x -= 1;
@@ -109,7 +111,7 @@ export class Player {
         this.position = this.position.add(this.velocity);
 
         // Ground collision detection
-        const groundLevel = this.canvasBounds.y - this.size.y;
+        const groundLevel = this.canvasBounds.y - this.size.y * 2;
         
         if (this.position.y >= groundLevel) {
             // Landed on ground
@@ -118,6 +120,21 @@ export class Player {
             this.isGrounded = true;
         } else {
             this.isGrounded = false;
+        }
+
+        // Midwall collision detection
+        const collision = CollisionDetector.checkAABBCollision(this, midwall);
+
+        // calculate left side of midwall
+        const leftSide = midwall.position.x;
+
+        if (collision) {
+            console.log('collision detected');
+            this.position.x = Math.max(0, Math.min(
+                leftSide - this.size.x, 
+                this.position.x
+            ));
+            this.velocity.x = 0;
         }
 
         // Constrain horizontal movement

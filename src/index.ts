@@ -1,6 +1,7 @@
 import { Player } from './player.js';
 import { Proyectile } from './proyectile.js';
-import { Background } from './background.js';
+import { CollisionDetector } from './collisionDetection.js';
+import { Midwall } from './midwall.js';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -9,26 +10,33 @@ ctx.fillStyle = 'white';
 class game {
     ctx: CanvasRenderingContext2D;
     player: Player;
+    midwall: Midwall;
 
     constructor(ctx: CanvasRenderingContext2D, player: Player) {
         this.ctx = ctx;
         this.player = player; 
+        this.midwall = new Midwall(this.ctx.canvas.width, this.ctx.canvas.height);
         window.addEventListener('resize', () => this.resize());
+        requestAnimationFrame(() => this.update());
         requestAnimationFrame(() => this.draw());
         this.resize();
-        this.gameLoop();
     }
 
-    gameLoop() {
+    update() {
+        console.log('updating game');
         // clear canvas
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+
+        // update midwall
+        this.midwall.update(this.ctx.canvas.width, this.ctx.canvas.height);
+
         // update player
-        this.player.update(ctx);
+        this.player.update(ctx, this.midwall);
 
         // proyectiles
         this.player.clientProyectiles.forEach((proyectile: Proyectile) => {
-            proyectile.update();
+            proyectile.update();            
 
             if (proyectile.isHit) {
                 const index = this.player.clientProyectiles.indexOf(proyectile);
@@ -36,9 +44,8 @@ class game {
             }
         });
 
-
         // call gameLoop again
-        requestAnimationFrame(() => this.gameLoop());
+        requestAnimationFrame(() => this.update());
     }
 
     draw() {
@@ -48,10 +55,8 @@ class game {
         this.ctx.fillStyle = 'white';
         this.ctx.fillRect(10, 10, this.ctx.canvas.width - 20, this.ctx.canvas.height - 20);
 
-        const background = new Background(this.ctx.canvas.width, this.ctx.canvas.height);
-
         // background
-        background.draw(this.ctx);
+        this.midwall.draw(this.ctx);
 
         this.player.draw(this.ctx);
 

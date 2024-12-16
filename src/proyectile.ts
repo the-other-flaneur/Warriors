@@ -30,7 +30,7 @@ export class Proyectile {
         );
 
         // Velocity specifically to the left with slight upward angle
-        this.velocity = new Vector2(-3, -0.2);  // Strong left movement with slight upward trajectory
+        this.velocity = new Vector2(3, -0.2);  // Strong left movement with slight upward trajectory
 
         this.gravityStrength = canvasHeight * 0.0002;  // Gravity relative to canvas height
         
@@ -47,9 +47,6 @@ export class Proyectile {
             // Apply velocity
             this.position = this.position.add(this.velocity.multiply(this.speed));
 
-            // Apply simple gravity
-            this.velocity.y += 0.1;
-
             // Apply gravity
             this.velocity.y += this.gravityStrength;
 
@@ -63,14 +60,16 @@ export class Proyectile {
 
     draw(ctx: CanvasRenderingContext2D) {
         if (!this.isHit) {
-            // Draw as red rectangle
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(
-                this.position.x,
-                this.position.y,
-                this.size.x,
-                this.size.y
-            );
+            // calculate radius
+            const radius = Math.min(this.size.x, this.size.y) / 2;
+
+            ctx.beginPath();
+            ctx.arc(this.position.x, this.position.y, radius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#';  
+            ctx.stroke();
         }
     }
 }
