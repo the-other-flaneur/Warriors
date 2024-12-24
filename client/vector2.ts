@@ -26,4 +26,8 @@ export class Vector2 {
     clone(): Vector2 {
         return new Vector2(this.x, this.y);
     }
+
+    zero(): Vector2 {
+        return new Vector2();
+    }
 }

@@ -4,14 +4,14 @@
   "main": "app/dist/app.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node app/dist/app.js",
-    "build:frontend": "tsc -p src/tsconfig.json",
-    "build:backend": "tsc -p app/tsconfig.json",
+    "start": "node server/dist/app.js",
+    "build:frontend": "tsc -p client/tsconfig.json",
+    "build:backend": "tsc -p server/tsconfig.json",
     "build": "npm run build:frontend && npm run build:backend",
-    "dev:frontend": "tsc -p src/tsconfig.json -w",
-    "dev:backend": "nodemon --watch 'app/**/*.ts' --exec 'ts-node' app/app.ts",
+    "dev:frontend": "tsc -p client/tsconfig.json -w",
+    "dev:backend": "nodemon --watch 'server/**/*.ts' --exec 'ts-node' server/app.ts",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "watch": "concurrently \"tsc -p src/tsconfig.json -w\" \"tsc -p app/tsconfig.json -w\""
+    "watch": "concurrently \"tsc -p client/tsconfig.json -w\" \"tsc -p server/tsconfig.json -w\""
   },
   "dependencies": {
     "express": "^4.21.2",

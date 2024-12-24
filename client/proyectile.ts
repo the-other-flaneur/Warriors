@@ -1,5 +1,5 @@
 import { Vector2 } from './vector2.js';
-import { Player } from './player.js';
+import { Player } from './frontendPlayer.js';
 
 export class Proyectile {
     shooter: Player;

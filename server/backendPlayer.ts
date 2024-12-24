@@ -1,9 +1,38 @@
-import { Vector2 } from './vector2.js';
-import { Proyectile } from './proyectile.js';
-import { Midwall } from './midwall.js';
-import { CollisionDetector } from './collisionDetection.js';
+import { Vector2 } from '../client/vector2';
 
-export class Player {
+export interface PlayersCollection {
+    [socketId: string]: backendPlayer;
+}
+
+/**
+ * Manages the game player instances.
+*/
+export class backManager {
+    private players: PlayersCollection = {};
+  
+    // Add a new player
+    addPlayer(socketId: string, player: backendPlayer): void {
+        this.players[socketId] = player;
+    }
+  
+    // Remove a player
+    removePlayer(socketId: string): void {
+        delete this.players[socketId];
+    }
+  
+    // Get a player
+    getPlayer(socketId: string): backendPlayer {
+        return this.players[socketId];
+    }
+  
+    // Get all players
+    getAllPlayers(): PlayersCollection {
+        return this.players;
+    }
+  }
+
+export class backendPlayer {
+    id: string;
     position: Vector2;
     size: Vector2;
     velocity: Vector2;
@@ -11,21 +40,22 @@ export class Player {
     speed: number;
     keys: Set<string>;
     canvasBounds: Vector2;
-    clientProyectiles: Proyectile[] = [];
-    
+    // backProjectiles: Proyectile[] = [];
+
     // Gravity and jump-related properties
     isGrounded: boolean;
     jumpStrength: number;
     gravityStrength: number;
-  
-    constructor(canvasWidth: number, canvasHeight: number) {
-        // Canvas bounds
+    movement: Vector2;
+
+    constructor(id: string, canvasWidth: number, canvasHeight: number) {
+        this.id = id;
         this.canvasBounds = new Vector2(canvasWidth, canvasHeight);
 
         // Size relative to canvas
         this.size = new Vector2(
-            canvasWidth * 0.1,  // width
-            canvasHeight * 0.3  // height
+            canvasWidth / 8,  // width
+            canvasHeight / 8  // height
         );
 
         // Start in the center horizontally, near the bottom vertically
@@ -40,46 +70,29 @@ export class Player {
 
         // Speed and physics parameters
         this.speed = canvasWidth * 0.03;
-        this.gravityStrength = canvasHeight * 0.004;  // Gravity relative to canvas height
+        this.gravityStrength = canvasHeight * 0.003;  // Gravity relative to canvas height
         this.jumpStrength = canvasHeight * 0.07;      // Jump strength relative to canvas height
 
         // Grounded state
         this.isGrounded = false;
 
+        this.movement = new Vector2();
+
         // Keys pressed
         this.keys = new Set();
 
         // Proyectiles
-        this.clientProyectiles = [];
-    
-        // Bind event listeners
-        this.addEventListeners();
+        // this.backProjectiles = [];
     }
 
-    addEventListeners() {
-        window.addEventListener('keydown', (e) => {
-            this.keys.add(e.code);
-            
-            // Jump when arrowup is pressed and player is grounded
-            if (e.code === 'ArrowUp') {
-                this.jump();
-            }
-
-            // Shoot when Space is pressed
-            if (e.code === 'Space') {
-                this.shoot();
-            }
-        });
-        window.addEventListener('keyup', (e) => this.keys.delete(e.code));
-    }
-
+    /*
     shoot() {
         // Create a new projectile
         console.log('shooting');
         const projectile = new Proyectile(this.canvasBounds.x, this.canvasBounds.y, this);
-        this.clientProyectiles.push(projectile);
-        console.log(this.clientProyectiles);
-    }
+        this.backProjectiles.push(projectile);
+        console.log(this.backProjectiles);
+    }*/
 
     jump() {
             // Apply upward velocity
@@ -87,9 +100,9 @@ export class Player {
             this.isGrounded = false;
     }
 
-    update(ctx: CanvasRenderingContext2D, midwall: Midwall) {
+    update() {
         // Horizontal movement
-        const movement = new Vector2();
+        let movement = new Vector2();
         if(this.keys.has('ArrowLeft')) movement.x -= 1;
         if(this.keys.has('ArrowRight')) movement.x += 1;
 
@@ -98,11 +111,13 @@ export class Player {
             movement.normalize();
         }
 
-        this.canvasBounds.x = ctx.canvas.width;
-        this.canvasBounds.y = ctx.canvas.height;
+        // this.canvasBounds.x = ctx.canvas.width;
+        // this.canvasBounds.y = ctx.canvas.height;
 
         // Apply horizontal movement
         this.velocity.x = movement.x * this.speed;
+
+        movement = movement.zero();
 
         // Apply gravity
         this.velocity.y += this.gravityStrength;
@@ -112,7 +127,7 @@ export class Player {
 
         // Ground collision detection
         const groundLevel = this.canvasBounds.y - this.size.y * 2;
-        
+
         if (this.position.y >= groundLevel) {
             // Landed on ground
             this.position.y = groundLevel;
@@ -123,35 +138,24 @@ export class Player {
         }
 
         // Midwall collision detection
-        const collision = CollisionDetector.checkAABBCollision(this, midwall);
+        // const collision = CollisionDetector.checkAABBCollision(this, midwall);
 
         // calculate left side of midwall
-        const leftSide = midwall.position.x;
+        // const leftSide = midwall.position.x;
 
-        if (collision) {
-            console.log('collision detected');
-            this.position.x = Math.max(0, Math.min(
-                leftSide - this.size.x, 
-                this.position.x
-            ));
-            this.velocity.x = 0;
-        }
+        // if (collision) {
+        //     console.log('collision detected');
+        //     this.position.x = Math.max(0, Math.min(
+        //         leftSide - this.size.x, 
+        //         this.position.x
+        //     ));
+        //     this.velocity.x = 0;
+        // }
 
         // Constrain horizontal movement
         this.position.x = Math.max(0, Math.min(
             this.position.x, 
             this.canvasBounds.x - this.size.x
         ));
-    }
-  
-    draw(ctx: CanvasRenderingContext2D) {
-        // Draw player as red rectangle
-        ctx.fillStyle = this.isGrounded ? 'green' : 'red';
-        ctx.fillRect(
-            this.position.x, 
-            this.position.y, 
-            this.size.x, 
-            this.size.y
-        );
     }
 }
