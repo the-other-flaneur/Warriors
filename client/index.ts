@@ -10,14 +10,23 @@ const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 ctx.fillStyle = 'white';
 
 socket.on("connect", () => {
-    socket.emit('createPlayer', canvas.width, canvas.height);
+    socket.emit('join_game', canvas.width, canvas.height);
+});
+
+socket.on('waitingForPlayer', () => {
+    console.log('Waiting for another player to join...');
+})
+
+socket.on('startGame', (lobbyId: string) => {
+    console.log('Game started on lobby:', lobbyId);
+    console.log('Players:', manager.getAllPlayers());
 });
 
 socket.on('updatePlayers', (backendPLayers: any) => {  
       
     for (const id in backendPLayers) {
         if (!manager.getPlayer(id)) {
-            const player = new frontendPlayer(id, backendPLayers[id].position, backendPLayers[id].size, socket);
+            const player = new frontendPlayer(id, backendPLayers[id].position, backendPLayers[id].size, socket, backendPLayers[id].color);
             manager.addPlayer(id, player);
         } 
         manager.getPlayer(id)?.update(backendPLayers[id].position);

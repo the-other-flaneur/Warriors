@@ -14,9 +14,11 @@
     "watch": "concurrently \"tsc -p client/tsconfig.json -w\" \"tsc -p server/tsconfig.json -w\""
   },
   "dependencies": {
+    "@types/uuid": "^10.0.0",
     "express": "^4.21.2",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

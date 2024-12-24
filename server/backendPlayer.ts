@@ -1,36 +1,5 @@
 import { Vector2 } from '../client/vector2';
 
-export interface PlayersCollection {
-    [socketId: string]: backendPlayer;
-}
-
-/**
- * Manages the game player instances.
-*/
-export class backManager {
-    private players: PlayersCollection = {};
-  
-    // Add a new player
-    addPlayer(socketId: string, player: backendPlayer): void {
-        this.players[socketId] = player;
-    }
-  
-    // Remove a player
-    removePlayer(socketId: string): void {
-        delete this.players[socketId];
-    }
-  
-    // Get a player
-    getPlayer(socketId: string): backendPlayer {
-        return this.players[socketId];
-    }
-  
-    // Get all players
-    getAllPlayers(): PlayersCollection {
-        return this.players;
-    }
-  }
-
 export class backendPlayer {
     id: string;
     position: Vector2;
@@ -40,6 +9,7 @@ export class backendPlayer {
     speed: number;
     keys: Set<string>;
     canvasBounds: Vector2;
+    color: string;
     // backProjectiles: Proyectile[] = [];
 
     // Gravity and jump-related properties
@@ -48,9 +18,10 @@ export class backendPlayer {
     gravityStrength: number;
     movement: Vector2;
 
-    constructor(id: string, canvasWidth: number, canvasHeight: number) {
+    constructor(id: string, canvasWidth: number, canvasHeight: number, playerColor: string) {
         this.id = id;
         this.canvasBounds = new Vector2(canvasWidth, canvasHeight);
+        this.color = playerColor;
 
         // Size relative to canvas
         this.size = new Vector2(

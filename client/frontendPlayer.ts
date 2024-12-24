@@ -6,9 +6,6 @@ export interface PlayersCollection {
     [socketId: string]: frontendPlayer;
 }
 
-/**
- * Manages the game player instances.
-*/
 export class frontManager {
     private players: PlayersCollection = {};
   
@@ -33,19 +30,21 @@ export class frontManager {
     }
   }
 
-
 export class frontendPlayer {
     id: string;
     position: Vector2;
     size: Vector2;
     wsD: wsDriver;
     keys: Set<string>;
-    constructor(id: string, position: Vector2, size: Vector2, socket: Socket) {
+    color: string;
+
+    constructor(id: string, position: Vector2, size: Vector2, socket: Socket, playerColor: string) {
         this.wsD = new wsDriver(socket);
         this.id = id;
         this.size = size;
         this.position = position;
         this.keys = new Set();  // Keys pressed
+        this.color = playerColor;
 
         // Bind event listeners
         this.addEventListeners();
@@ -83,7 +82,7 @@ export class frontendPlayer {
 
     draw(ctx: CanvasRenderingContext2D) {
         // Draw player as red rectangle
-        ctx.fillStyle = 'red'; //this.isGrounded ? 'green' : 'red';
+        ctx.fillStyle = this.color; //this.isGrounded ? 'green' : 'red';
         ctx.fillRect(
             this.position.x, 
             this.position.y, 
